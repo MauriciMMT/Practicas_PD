@@ -1,37 +1,45 @@
+Informe de Funcionamiento – Lectura y Listado de Archivos en Tarjeta SD usando SPI (ESP32-S3)
 
-This directory is intended for project header files.
+El objetivo de este programa es inicializar el bus SPI en un ESP32-S3 para comunicarse con una tarjeta SD, comprobar su correcta inicialización y listar el contenido de la tarjeta (archivos y carpetas) por el puerto serie. Esto permite verificar tanto la conexión física como el funcionamiento del bus SPI y la tarjeta SD.
 
-A header file is a file containing C declarations and macro definitions
-to be shared between several project source files. You request the use of a
-header file in your project source file (C, C++, etc) located in `src` folder
-by including it, with the C preprocessing directive `#include'.
+Funcionamiento del Código
 
-```src/main.c
+1. Inicialización de la comunicación serie:
+   El programa comienza inicializando la comunicación serie a 115200 baudios para mostrar mensajes de estado y depuración.
 
-#include "header.h"
+2. Configuración manual del bus SPI:
+   Se inicializa el bus SPI especificando manualmente los pines SCK, MISO y MOSI, y se configura el pin CS (chip select) como salida.
 
-int main (void)
-{
- ...
-}
-```
+3. Inicialización de la tarjeta SD:
+   El programa intenta inicializar la tarjeta SD en el pin CS definido. Si falla, lo intenta hasta 5 veces, mostrando mensajes de error y sugerencias de verificación (conexiones, formato, voltaje). Si tras 5 intentos no se logra, el programa se detiene.
 
-Including a header file produces the same results as copying the header file
-into each source file that needs it. Such copying would be time-consuming
-and error-prone. With a header file, the related declarations appear
-in only one place. If they need to be changed, they can be changed in one
-place, and programs that include the header file will automatically use the
-new version when next recompiled. The header file eliminates the labor of
-finding and changing all the copies as well as the risk that a failure to
-find one copy will result in inconsistencies within a program.
+4. Listado de archivos:
+   Si la tarjeta SD se inicializa correctamente, se llama a la función listFiles() que recorre y muestra por el puerto serie todos los archivos y carpetas en la raíz de la tarjeta, mostrando también el tamaño de cada archivo.
 
-In C, the convention is to give header files names that end with `.h'.
+5. Bucle principal:
+   El bucle loop() está vacío, ya que toda la funcionalidad se realiza en el setup().
 
-Read more about using header files in official GCC documentation:
+Salida:
 
-* Include Syntax
-* Include Operation
-* Once-Only Headers
-* Computed Includes
+- Si la tarjeta SD se inicializa correctamente:
 
-https://gcc.gnu.org/onlinedocs/cpp/Header-Files.html
+  Iniciando sistema...
+  Configurando tarjeta SD...
+  Tarjeta SD inicializada correctamente
+
+  Contenido de la tarjeta:
+  archivo1.txt    1234
+  carpeta/
+  imagen.jpg      56789
+  
+- Si la tarjeta SD no se inicializa:
+  
+  Iniciando sistema...
+  Configurando tarjeta SD...
+  Fallo inicialización SD. Intentando nuevamente...
+
+  Error crítico: No se pudo inicializar SD
+  Verifica:
+  1. Conexiones de pines
+  2. Formato FAT32 de la tarjeta
+  3. Voltaje 3.3V en el módulo SD
