@@ -1,39 +1,39 @@
+# Informe de Funcionamiento
 
-This directory is intended for project header files.
+## Descripción General
 
-A header file is a file containing C declarations and macro definitions
-to be shared between several project source files. You request the use of a
-header file in your project source file (C, C++, etc) located in `src` folder
-by including it, with the C preprocessing directive `#include'.
+Este proyecto utiliza un botón (pulsador) conectado a la placa para controlar un LED NeoPixel. Cada vez que el usuario pulsa el botón, el sistema realiza las siguientes acciones:
 
-```src/main.c
+- Incrementa un contador de pulsaciones.
+- Enciende el NeoPixel en color blanco durante un breve periodo.
+- Imprime por el puerto serie el número total de pulsaciones detectadas.
 
-#include "header.h"
+## Funcionamiento
 
-int main (void)
-{
- ...
-}
+1. **Inicialización:**
+   - El pin del botón se configura como entrada con resistencia pull-up interna.
+   - El NeoPixel se inicializa y se apaga al inicio.
+   - Se configura una interrupción externa en el pin del botón para detectar pulsaciones (flanco de bajada).
+   - Se inicia la comunicación por el puerto serie a 115200 baudios.
+
+2. **Detección de Pulsaciones:**
+   - Cuando el usuario pulsa el botón, se activa la interrupción.
+   - El contador de pulsaciones se incrementa y se marca que el botón ha sido presionado.
+
+3. **Respuesta a la Pulsación:**
+   - En el bucle principal (`loop`), si se detecta que el botón fue presionado:
+     - Se imprime por el puerto serie el número total de pulsaciones.
+     - El NeoPixel se enciende en color blanco durante 100 ms.
+     - Luego, el NeoPixel se apaga.
+
+## Salidas por Impresión Serie
+
+Cada vez que se pulsa el botón, la salida por el monitor serie será similar a:
+
 ```
+Button pressed 1 times
+Button pressed 2 times
+Button pressed 3 times
+...
 
-Including a header file produces the same results as copying the header file
-into each source file that needs it. Such copying would be time-consuming
-and error-prone. With a header file, the related declarations appear
-in only one place. If they need to be changed, they can be changed in one
-place, and programs that include the header file will automatically use the
-new version when next recompiled. The header file eliminates the labor of
-finding and changing all the copies as well as the risk that a failure to
-find one copy will result in inconsistencies within a program.
-
-In C, the usual convention is to give header files names that end with `.h'.
-It is most portable to use only letters, digits, dashes, and underscores in
-header file names, and at most one dot.
-
-Read more about using header files in official GCC documentation:
-
-* Include Syntax
-* Include Operation
-* Once-Only Headers
-* Computed Includes
-
-https://gcc.gnu.org/onlinedocs/cpp/Header-Files.html
+Cada línea indica el número total de veces que se ha pulsado el botón desde que se inició el programa.
